@@ -1,0 +1,21 @@
+Ignorer l'environnement virtuel Python
+
+(Contient des Giga-octets de bibliothèques)
+
+.venv/
+venv/
+
+Ignorer les dossiers de données brutes
+
+(Trop lourd pour GitHub, on ne partage que le modèle entraîné)
+
+data/
+
+Ignorer les caches Python
+
+pycache/
+*.pyc
+
+Ignorer les fichiers système (si vous êtes sur Mac)
+
+.DS_Store
