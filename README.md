@@ -4,7 +4,7 @@ Reconnaissance de Gestes de la Main en Temps Réel (OpenCV & PyTorch)
 
 Voici le modèle en action, capable de classifier les gestes en temps réel.
 
-| ![Geste Poing](demo/poing.jpg) | ![Geste Main Ouverte](demo/mainouverte.jpg) | ![Geste Peace](demo/peace.jpg) |
+| ![Geste Poing](demo/poing.png) | ![Geste Main Ouverte](demo/mainouverte.png) | ![Geste Peace](demo/peace.png) |
 
 
 (Note : Ces images sont des captures d'écran du script test.py en direct.)
@@ -122,4 +122,5 @@ Amira DIF - Ingénieure Traitement Signal & Image | Machine Learning
 Portfolio : amiradif40-cmd.github.io
 
 LinkedIn : linkedin.com/in/amira-dif-605574191
+
 
