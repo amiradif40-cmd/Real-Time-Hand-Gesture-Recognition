@@ -1,14 +1,10 @@
-
-'''
-autrice : AMIRA DIF 
-'''
-
 import cv2
 import mediapipe as mp
 import torch
 import torch.nn as nn
 from torchvision import transforms
 import numpy as np
+import os 
 
 # --- 1. Définir le "device" (CPU) ---
 device = torch.device("cpu")
@@ -46,15 +42,17 @@ class SimpleCNN(nn.Module):
 
 # --- 3. Charger le Modèle Entraîné et les Classes ---
 MODEL_SAVE_PATH = "hand_gesture_model.pth"
-CLASSES_FILE_PATH = "classes.txt" # Le fichier créé par train.py
+CLASSES_FILE_PATH = "classes.txt" 
 
-# Charger les noms de classes
-try:
-    with open(CLASSES_FILE_PATH, 'r') as f:
-        class_names = [line.strip() for line in f.readlines()]
-except FileNotFoundError:
+if not os.path.exists(MODEL_SAVE_PATH):
+    print(f"ERREUR: Fichier modèle '{MODEL_SAVE_PATH}' non trouvé. Avez-vous lancé train.py ?")
+    exit()
+if not os.path.exists(CLASSES_FILE_PATH):
     print(f"ERREUR: Fichier 'classes.txt' non trouvé. Avez-vous lancé train.py ?")
     exit()
+
+with open(CLASSES_FILE_PATH, 'r') as f:
+    class_names = [line.strip() for line in f.readlines()]
 
 NUM_CLASSES = len(class_names)
 print(f"Classes chargées : {class_names} (Total: {NUM_CLASSES})")
@@ -63,18 +61,12 @@ print(f"Classes chargées : {class_names} (Total: {NUM_CLASSES})")
 model = SimpleCNN(num_classes=NUM_CLASSES).to(device)
 
 # Charger les poids  sauvegardés
-try:
-    model.load_state_dict(torch.load(MODEL_SAVE_PATH, map_location=device))
-except FileNotFoundError:
-    print(f"ERREUR: Fichier modèle '{MODEL_SAVE_PATH}' non trouvé. Avez-vous lancé train.py ?")
-    exit()
-
-# Mettre le modèle en mode évaluation 
-model.eval()
+model.load_state_dict(torch.load(MODEL_SAVE_PATH, map_location=device))
+model.eval() 
 
 # --- 4. Définir les Transformations d'Image ---
 data_transforms = transforms.Compose([
-    transforms.ToPILImage(), 
+    transforms.ToPILImage(), # Convertir l'array NumPy (OpenCV) en image PIL
     transforms.Resize((64, 64)),
     transforms.Grayscale(num_output_channels=1),
     transforms.ToTensor(),
@@ -90,7 +82,6 @@ hands = mp_hands.Hands(
     min_detection_confidence=0.7,
     min_tracking_confidence=0.5)
 
-# Marge (padding) autour de la boîte de détection (bounding box)
 padding = 20
 
 # --- 6. Démarrer la Boucle de Test en Temps Réel ---
@@ -108,7 +99,9 @@ while cap.isOpened():
     
     H, W, _ = frame.shape
     
-    prediction_text = "Pas de main" 
+    prediction_text = "Pas de main"
+    text_position = (20, 40) # Position (coin supérieur gauche)
+    text_color = (0, 0, 255) # Couleur (Rouge)
 
     if results.multi_hand_landmarks:
         hand_landmarks = results.multi_hand_landmarks[0]
@@ -134,46 +127,43 @@ while cap.isOpened():
         cv2.rectangle(frame, (x_min_px_padded, y_min_px_padded), (x_max_px_padded, y_max_px_padded), (0, 255, 0), 2)
         
         # --- 7. Préparation de l'Image pour le Modèle ---
-        # Rogner l'image de la main
         cropped_hand = frame[y_min_px_padded:y_max_px_padded, x_min_px_padded:x_max_px_padded]
         
         if cropped_hand.size > 0:
-            # 1. Appliquer les transformations
-            # (Note: on utilise cv2.cvtColor car les transformations attendent du RGB)
             cropped_hand_rgb = cv2.cvtColor(cropped_hand, cv2.COLOR_BGR2RGB)
             image_tensor = data_transforms(cropped_hand_rgb)
-            
-            # 2. Ajouter une "dimension batch" (le modèle attend un lot d'images)
-            # (1, 64, 64) -> (1, 1, 64, 64) [Batch_size, Canaux, H, W]
             image_tensor = image_tensor.unsqueeze(0).to(device)
             
             # --- 8. FAIRE LA PRÉDICTION ---
-            with torch.no_grad(): 
+            with torch.no_grad():
                 outputs = model(image_tensor)
-                
                 _, predicted_idx = torch.max(outputs.data, 1)
-                
                 prediction_text = class_names[predicted_idx.item()]
     
-    # --- 9. Afficher la Prédiction ---
+        # --- 9. Mettre à jour la position et la couleur du texte ---
+        text_position = (x_min_px_padded, y_min_px_padded - 10) # Position juste au-dessus de la boîte
+        text_color = (0, 255, 0) # Couleur (Vert)
+    
+    # --- 10. Afficher la Prédiction (MAINTENANT SANS ERREUR) ---
+
     cv2.putText(
         frame, 
         prediction_text.upper(), 
-        (x_min_px_padded, y_min_px_padded - 10), # Position juste au-dessus de la boîte
+        text_position, 
         cv2.FONT_HERSHEY_SIMPLEX, 
-        1, # Taille de la police
-        (0, 255, 0), # Couleur (Vert)
-        2, # Épaisseur
+        1, 
+        text_color, 
+        2, 
         cv2.LINE_AA
     )
     
-    # Afficher l'image
     cv2.imshow('Test en Temps Reel', frame)
 
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 
-# --- 10. Nettoyage ---
+# --- 11. Nettoyage ---
 hands.close()
 cap.release()
 cv2.destroyAllWindows()
+
