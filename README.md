@@ -28,20 +28,32 @@ Numpy : Pour la manipulation des images.
 📂 Structure du Projet
 
 Real-Time-Hand-Gesture-Recognition/
+
 │
 ├── demo/                 # Contient les images de démonstration.
+
 ├── data/                 # (Ignoré par .gitignore) Données brutes de collecte.
+
 ├── .venv/                # (Ignoré par .gitignore) Environnement virtuel.
 │
+
 ├── collect_data.py       # PHASE 1: Script pour collecter les images d'entraînement.
+
 ├── train.py              # PHASE 2: Script pour entraîner le modèle CNN avec PyTorch.
+
 ├── test.py               # PHASE 3: Script pour tester le modèle en temps réel.
 │
+
 ├── hand_gesture_model.pth  # Le "cerveau" IA entraîné (modèle sauvegardé).
+
 ├── classes.txt           # Fichier listant les classes (gestes) entraînées.
+
 ├── requirements.txt      # Liste des bibliothèques Python nécessaires.
+
 ├── .gitignore            # Fichier pour ignorer les dossiers non nécessaires.
+
 └── README.md             # Vous êtes ici !
+
 
 
 
@@ -122,5 +134,6 @@ Amira DIF - Ingénieure Traitement Signal & Image | Machine Learning
 Portfolio : amiradif40-cmd.github.io
 
 LinkedIn : linkedin.com/in/amira-dif-605574191
+
 
 
