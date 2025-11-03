@@ -1,12 +1,30 @@
 Reconnaissance de Gestes de la Main en Temps Réel (OpenCV & PyTorch)
 
-==> Introduction
+🚀 Démonstration
 
-Ce projet est une application de Vision par Ordinateur (Computer Vision) en Python capable de reconnaître et de classifier des gestes de la main (Poing, Main Ouverte, Peace) en temps réel à partir d'un flux webcam.
+Voici le modèle en action, capable de classifier les gestes en temps réel.
 
-L'ensemble du pipeline, de la collecte de données à l'inférence en direct, est implémenté à l'aide d'OpenCV pour la capture d'image, MediaPipe pour la détection de la main, et PyTorch pour l'entraînement d'un modèle de Deep Learning (CNN).
+| ![Geste Poing](demo/poing.jpg) | ![Geste Main Ouverte](demo/mainouverte.jpg) | ![Geste Peace](demo/peace.jpg) |
+Copiez ce nouveau `README.md` sur GitHub, et vos images s'afficheront !
+Poing
 
-==>  Technologies Utilisées
+Main Ouverte
+
+Peace
+
+
+
+
+
+
+
+(Note : Ces images sont des captures d'écran du script test.py en direct.)
+
+📌 Introduction
+
+Cette application Python de Vision par Ordinateur classifie les gestes de la main (Poing, Main Ouverte, Peace) en temps réel via webcam. Le pipeline complet (collecte, entraînement, inférence) utilise OpenCV, MediaPipe et un CNN PyTorch.
+
+✨ Technologies Utilisées
 
 Python 3.10+
 
@@ -18,10 +36,11 @@ MediaPipe (par Google) : Pour la détection haute performance des points-clés (
 
 Numpy : Pour la manipulation des images.
 
-==>  Structure du Projet
+📂 Structure du Projet
 
 Real-Time-Hand-Gesture-Recognition/
 │
+├── demo/                 # Contient les images de démonstration.
 ├── data/                 # (Ignoré par .gitignore) Données brutes de collecte.
 ├── .venv/                # (Ignoré par .gitignore) Environnement virtuel.
 │
@@ -36,14 +55,16 @@ Real-Time-Hand-Gesture-Recognition/
 └── README.md             # Vous êtes ici !
 
 
-==>  Installation et Utilisation
 
-Ce projet a été développé sur Windows 10/11.
+🚀 Installation et Utilisation
+
+Le modèle (hand_gesture_model.pth) est pré-entraîné et inclus. Vous pouvez le lancer directement.
 
 1. Cloner le Dépôt
 
 git clone [https://github.com/amiradif40-cmd/Real-Time-Hand-Gesture-Recognition.git](https://github.com/amiradif40-cmd/Real-Time-Hand-Gesture-Recognition.git)
 cd Real-Time-Hand-Gesture-Recognition
+
 
 
 2. Créer et Activer un Environnement Virtuel
@@ -55,25 +76,27 @@ python -m venv .venv
 .\.venv\Scripts\activate.bat
 
 
+
 3. Installer les Dépendances
 (La version CPU de PyTorch est spécifiée pour une compatibilité maximale)
 
 pip install -r requirements.txt
 
 
+
 4. Tester en Temps Réel !
-Le modèle (hand_gesture_model.pth) est déjà entraîné et inclus dans ce dépôt. Vous pouvez le lancer directement !
 
 python test.py
 
 
+
 Ouvrez votre main, faites un poing, et le modèle devrait le prédire en direct.
 
-==>  Comment l'entraîner vous-même (Recréer le projet)
+🛠️ Comment l'entraîner vous-même (Recréer le projet)
 
 Phase 1 : Collecte de Données
 
-Lancez le script de collecte. Placez votre main devant la caméra et appuyez sur les touches pour sauvegarder les images dans les dossiers data/.
+Lancez collect_data.py. Appuyez sur les touches (p, o, v) pour sauvegarder les images de votre main.
 
 p - Poing
 
@@ -86,35 +109,26 @@ q - Quitter
 python collect_data.py
 
 
+
 Phase 2 : Entraînement du Modèle
 
-Une fois que vous avez collecté suffisamment d'images (300+ par classe est un bon début), lancez le script d'entraînement.
+Lancez python train.py pour entraîner le modèle sur les images collectées. Le script entraînera le CNN et sauvegardera le modèle final sous hand_gesture_model.pth.
 
 python train.py
 
 
-Le script va :
-
-Charger les images depuis le dossier data/.
-
-Appliquer des transformations (redimensionner, N&B, normaliser).
-
-Diviser en sets d'entraînement (80%) et de validation (20%).
-
-Entraîner le SimpleCNN pendant 15 époques.
-
-Sauvegarder le modèle final sous hand_gesture_model.pth.
 
 Phase 3 : Test
 
-Lancez test.py pour voir votre propre modèle en action !
+Lancez test.py pour tester votre nouveau modèle.
 
 python test.py
 
 
+
 👤 Auteur
 
-Amira DIF
+Amira DIF - Ingénieure Traitement Signal & Image | Machine Learning
 
 Portfolio : amiradif40-cmd.github.io
 
